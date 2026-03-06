@@ -1,11 +1,12 @@
-import { ArrowUpRight, TrendingUp, AlertCircle, CheckCircle, Clock } from 'lucide-react';
+import { ArrowUpRight, TrendingUp, Clock } from 'lucide-react';
 import type { TradeOpportunity } from '../types/poe';
 
 interface TradeOpportunitiesProps {
   opportunities: TradeOpportunity[];
+  league?: string;
 }
 
-export function TradeOpportunities({ opportunities }: TradeOpportunitiesProps) {
+export function TradeOpportunities({ opportunities, league = '3.27' }: TradeOpportunitiesProps) {
   if (opportunities.length === 0) {
     return (
       <div className="bg-gray-800 rounded-xl border border-gray-700 p-8 text-center">
@@ -104,9 +105,8 @@ export function TradeOpportunities({ opportunities }: TradeOpportunitiesProps) {
                 <button
                   className="flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300 transition-colors"
                   onClick={() => {
-                    // Could open poe.trade or poe.ninja link here
                     window.open(
-                      `https://poe.ninja/economy/${encodeURIComponent('Mercenaries')}`,
+                      `https://poe.ninja/economy/${encodeURIComponent(league)}`,
                       '_blank'
                     );
                   }}

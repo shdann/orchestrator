@@ -1,0 +1,62 @@
+# Example Workflow: Build and Document a Python Tool
+# Demonstrates multi-agent coordination via OpenClaw
+#
+# Run: ./claw "research best CLI argument parsers for Python, then build a CLI tool
+#              that parses JSON log files and outputs summaries, then write a README"
+
+name: build_and_document_cli_tool
+trigger: user_input
+session_id: demo-001
+
+steps:
+
+  - id: step_1
+    agent: research
+    goal: "Find the best Python CLI argument parsing libraries in 2025. Compare argparse, click, and typer."
+    priority: 1
+    tools_allowed: [web_search, url_fetch, scratchpad_write]
+    expected_output: research_result
+    depends_on: []
+
+  - id: step_2
+    agent: builder
+    goal: "Create a Python CLI tool at /home/shdann/tools/logparse.py that reads a JSON log file and outputs a summary of error counts by level."
+    priority: 1
+    tools_allowed: [opencode_cli, file_write, shell_exec, scratchpad_write]
+    expected_output: builder_result
+    depends_on: [step_1]
+    context_from_deps: step_1.findings  # inject research results
+
+  - id: step_3_parallel_a
+    agent: builder
+    goal: "Write unit tests for /home/shdann/tools/logparse.py using pytest."
+    priority: 2
+    tools_allowed: [opencode_cli, file_write, shell_exec]
+    expected_output: builder_result
+    depends_on: [step_2]
+
+  - id: step_3_parallel_b
+    agent: comms
+    goal: "Write a README.md for the logparse CLI tool. Include: purpose, install instructions, usage examples, and output format."
+    priority: 2
+    tools_allowed: [file_write, template_render]
+    expected_output: comms_result
+    format: markdown
+    tone: technical
+    depends_on: [step_2]
+
+  - id: step_4
+    agent: ops
+    goal: "Schedule a daily run of logparse.py at 02:00 UTC on /var/log/app.json. Output to /var/log/summaries/"
+    priority: 3
+    tools_allowed: [cron_write, shell_exec, file_write]
+    expected_output: ops_result
+    depends_on: [step_3_parallel_a, step_3_parallel_b]
+
+merge_strategy: sequential_with_parallel_branches
+final_output: comms  # comms agent formats final response
+
+expected_artifacts:
+  - /home/shdann/tools/logparse.py
+  - /home/shdann/tools/test_logparse.py
+  - /home/shdann/tools/README.md

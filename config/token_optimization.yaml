@@ -1,0 +1,71 @@
+# Token Optimization Rules
+# Applied globally across all agents
+
+version: "1.0"
+
+system_prompt_limits:
+  orchestrator: 512
+  research: 384
+  builder: 512
+  ops: 384
+  comms: 256
+  subagents: 256
+
+context_injection_limits:
+  memory_context: 1024
+  dependency_output: 512
+  file_content: 4096    # builder only
+  search_results: 512   # per result, max 5 results
+  error_context: 256
+
+what_to_strip:
+  - Full conversation history → replaced by distilled memory refs
+  - Raw web page HTML → strip to text, then summarize to 512 tokens
+  - Full file contents → inject only relevant functions/sections
+  - Verbose agent reasoning → output JSON only, reasoning in scratchpad
+  - Repeated context across agents → store once in memory, pass ref
+
+caching:
+  enabled: true
+  cache_dir: memory/cache/
+  ttl_seconds: 3600
+  cache_on:
+    - web_search results (by query hash)
+    - file reads (by path + mtime)
+    - template renders (by template_id + params hash)
+
+compression:
+  research_findings: summarize to 3 sentences max per source
+  builder_output: diff only, not full file rewrite
+  ops_logs: metadata only, not full file trees
+  comms_drafts: final content only, no intermediate drafts
+
+retrieval_over_stuffing:
+  strategy: query_memory_first
+  steps:
+    1: Query vector store with task keywords
+    2: Retrieve top-3 relevant memory entries
+    3: Inject only those entries into context
+    4: Never inject full project history
+
+output_compression:
+  on_success: keep only artifacts + summary
+  on_failure: keep error + last 3 actions
+  drop_always:
+    - intermediate_reasoning
+    - raw_tool_output > 256 tokens
+    - duplicate_fields
+
+per_agent_removable_context:
+  research:
+    remove: [code_snippets, file_trees, shell_output]
+    keep: [facts, sources, summaries]
+  builder:
+    remove: [prose_explanations, marketing_copy, long_summaries]
+    keep: [file_paths, diffs, commands, errors]
+  ops:
+    remove: [explanations, research_findings]
+    keep: [paths, cron_expressions, commands, statuses]
+  comms:
+    remove: [raw_data, code, shell_output]
+    keep: [structured_content, templates, tone_instructions]

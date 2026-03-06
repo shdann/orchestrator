@@ -1,0 +1,146 @@
+# Tool Permission Matrix
+# Defines which agents can use which tools and at what permission level
+# Levels: none | read | write | exec | admin
+
+version: "1.0"
+
+tools:
+  web_search:
+    orchestrator: none
+    research: exec
+    builder: none
+    ops: none
+    comms: none
+
+  url_fetch:
+    orchestrator: none
+    research: exec
+    builder: read
+    ops: none
+    comms: none
+
+  file_read:
+    orchestrator: read
+    research: read
+    builder: read
+    ops: read
+    comms: read
+
+  file_write:
+    orchestrator: none
+    research: none
+    builder: write
+    ops: write
+    comms: write
+
+  file_edit:
+    orchestrator: none
+    research: none
+    builder: write
+    ops: write
+    comms: write
+
+  file_delete:
+    orchestrator: none
+    research: none
+    builder: none
+    ops: exec  # requires confirm=true in ops.yaml
+    comms: none
+
+  file_move:
+    orchestrator: none
+    research: none
+    builder: write
+    ops: write
+    comms: none
+
+  shell_exec:
+    orchestrator: none
+    research: none
+    builder: exec
+    ops: exec
+    comms: none
+
+  opencode_cli:
+    orchestrator: none
+    research: none
+    builder: exec
+    ops: exec
+    comms: none
+
+  git_ops:
+    orchestrator: none
+    research: read
+    builder: exec
+    ops: read
+    comms: none
+
+  cron_write:
+    orchestrator: none
+    research: none
+    builder: none
+    ops: write
+    comms: none
+
+  notify_send:
+    orchestrator: write
+    research: none
+    builder: none
+    ops: write
+    comms: write
+
+  memory_read:
+    orchestrator: read
+    research: read
+    builder: read
+    ops: read
+    comms: read
+
+  memory_write:
+    orchestrator: write
+    research: none
+    builder: write
+    ops: write
+    comms: none
+
+  scratchpad_write:
+    orchestrator: write
+    research: write
+    builder: write
+    ops: write
+    comms: write
+
+  queue_read:
+    orchestrator: read
+    research: none
+    builder: none
+    ops: none
+    comms: none
+
+  queue_write:
+    orchestrator: write
+    research: none
+    builder: none
+    ops: none
+    comms: none
+
+  agent_spawn:
+    orchestrator: admin
+    research: none
+    builder: none
+    ops: none
+    comms: none
+
+  log_write:
+    orchestrator: write
+    research: write
+    builder: write
+    ops: write
+    comms: write
+
+  template_render:
+    orchestrator: read
+    research: read
+    builder: read
+    ops: read
+    comms: exec

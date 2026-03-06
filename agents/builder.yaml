@@ -1,0 +1,50 @@
+id: builder
+role: Builder Agent
+model: opencode
+context_limit: 8192
+system_prompt_file: templates/prompts/builder.txt
+
+capabilities:
+  - code_generation
+  - code_editing
+  - debugging
+  - infra_setup
+  - config_generation
+  - shell_execution
+  - git_operations
+  - package_management
+
+tools_allowed:
+  - opencode_cli
+  - file_read
+  - file_write
+  - file_edit
+  - shell_exec
+  - git_ops
+  - memory_read
+  - scratchpad_write
+  - log_write
+
+routing:
+  receives_from: [orchestrator]
+  sends_to: [orchestrator]
+
+opencode_integration:
+  binary: opencode
+  flags:
+    - "--no-verbose"
+    - "--output json"
+  timeout_s: 120
+
+output_format: json
+output_schema: schemas/builder_result.json
+
+memory:
+  scratchpad: true
+  long_term: read_write
+  project: read_write
+  logs: true
+
+retry_policy:
+  max_attempts: 3
+  on_error: inject_error_context

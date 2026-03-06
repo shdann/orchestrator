@@ -1,0 +1,64 @@
+# Memory Strategy Configuration
+
+version: "1.0"
+
+stores:
+
+  scratchpad:
+    description: Short-term working memory. Cleared after each task session.
+    backend: file
+    path: memory/scratchpad/
+    format: json
+    ttl: session
+    max_size_kb: 512
+    agents: all
+    notes: Use for intermediate reasoning, partial results, temp state
+
+  long_term:
+    description: Persistent vector store for distilled knowledge
+    backend: chromadb  # local, no API key needed
+    path: memory/vectors/
+    embedding_model: nomic-embed-text  # runs locally via ollama
+    max_entries: 10000
+    agents:
+      read: [orchestrator, research, builder, ops, comms]
+      write: [orchestrator, builder]
+    notes: Store facts, summaries, resolved patterns. Never store full conversations.
+
+  project:
+    description: Per-project structured memory
+    backend: file
+    path: memory/projects/
+    format: json
+    structure:
+      - project_id
+      - goals
+      - decisions
+      - artifacts
+      - open_questions
+    agents:
+      read: all
+      write: [orchestrator, builder, ops]
+
+  execution_log:
+    description: Append-only log of all agent actions
+    backend: file
+    path: logs/
+    format: jsonl
+    rotation: daily
+    retain_days: 30
+    agents: all
+    fields:
+      - timestamp
+      - task_id
+      - agent_id
+      - action
+      - result
+      - tokens_used
+
+rules:
+  - Never store raw conversation turns
+  - Store only: facts, decisions, artifact paths, errors, summaries
+  - Scratchpad is wiped after task completion
+  - Long-term entries must include source + confidence
+  - All stores are local — no cloud sync unless explicitly configured

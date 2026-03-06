@@ -1,0 +1,37 @@
+id: orchestrator
+role: Orchestrator
+model: opencode
+context_limit: 4096
+system_prompt_file: templates/prompts/orchestrator.txt
+
+capabilities:
+  - task_decomposition
+  - agent_delegation
+  - result_merging
+  - priority_routing
+  - retry_logic
+
+tools_allowed:
+  - queue_read
+  - queue_write
+  - memory_read
+  - memory_write
+  - agent_spawn
+  - log_write
+
+routing:
+  receives_from: [user_input, agent_output]
+  sends_to: [research, builder, ops, comms]
+
+retry_policy:
+  max_attempts: 2
+  backoff_ms: 500
+
+output_format: json
+output_schema: schemas/orchestrator_plan.json
+
+memory:
+  scratchpad: true
+  long_term: true
+  project: true
+  logs: true

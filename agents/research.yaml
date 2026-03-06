@@ -1,0 +1,39 @@
+id: research
+role: Research Agent
+model: opencode
+context_limit: 2048
+system_prompt_file: templates/prompts/research.txt
+
+capabilities:
+  - web_search
+  - url_fetch
+  - document_read
+  - summarization
+  - knowledge_extraction
+  - vector_query
+
+tools_allowed:
+  - web_search
+  - url_fetch
+  - file_read
+  - memory_read
+  - scratchpad_write
+  - log_write
+
+routing:
+  receives_from: [orchestrator]
+  sends_to: [orchestrator]
+
+output_format: json
+output_schema: schemas/research_result.json
+
+memory:
+  scratchpad: true
+  long_term: read_only
+  project: read_only
+  logs: true
+
+token_hints:
+  max_search_results: 5
+  max_content_per_source: 512
+  summary_target_tokens: 200

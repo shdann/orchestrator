@@ -1,0 +1,42 @@
+id: comms
+role: Communication Agent
+model: opencode
+context_limit: 2048
+system_prompt_file: templates/prompts/comms.txt
+
+capabilities:
+  - email_drafting
+  - message_drafting
+  - documentation_generation
+  - readme_writing
+  - changelog_generation
+  - output_formatting
+  - template_application
+
+tools_allowed:
+  - file_read
+  - file_write
+  - template_render
+  - memory_read
+  - scratchpad_write
+  - log_write
+
+routing:
+  receives_from: [orchestrator]
+  sends_to: [orchestrator]
+
+output_format: json
+output_schema: schemas/comms_result.json
+
+supported_formats:
+  - markdown
+  - plain_text
+  - email
+  - slack
+  - json
+
+memory:
+  scratchpad: true
+  long_term: read_only
+  project: read_only
+  logs: true

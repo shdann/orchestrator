@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LayoutDashboard, Package, TrendingUp, DollarSign } from 'lucide-react';
+import { LayoutDashboard, Package, TrendingUp, ArrowUpRight, DollarSign, Sparkles } from 'lucide-react';
 import { usePoeData } from '../hooks/usePoeData';
 import { useAlerts } from '../hooks/useAlerts';
 import { Header } from './Header';
@@ -7,7 +7,6 @@ import { CurrencyCard, CurrencyCardSkeleton } from './CurrencyCard';
 import { ItemPriceTable } from './ItemPriceTable';
 import { TradeOpportunities } from './TradeOpportunities';
 import { AlertsPanel } from './AlertsPanel';
-import type { CurrencyRate, TrackedItem, TradeOpportunity as OppType } from '../types/poe';
 
 type Tab = 'dashboard' | 'currencies' | 'items' | 'opportunities';
 
@@ -23,8 +22,12 @@ export function Dashboard() {
     error,
     lastUpdated,
     league,
+    setLeague,
     refresh,
-  } = usePoeData('Mercenaries');
+  } = usePoeData('3.27');
+
+  // setLeague is used in the Header component for league switching
+  void setLeague;
 
   const { alerts, addAlert, removeAlert, clearTriggered } = useAlerts(currencies, items);
   const triggeredAlerts = alerts.filter(a => a.triggered).length;
@@ -50,6 +53,7 @@ export function Dashboard() {
           triggeredAlerts={triggeredAlerts}
           onRefresh={refresh}
           onAlertsClick={() => setShowAlerts(true)}
+          onLeagueChange={setLeague}
         />
         <div className="max-w-7xl mx-auto px-4 py-12">
           <div className="bg-red-900/20 border border-red-800 rounded-xl p-8 text-center">
@@ -87,6 +91,7 @@ export function Dashboard() {
         triggeredAlerts={triggeredAlerts}
         onRefresh={refresh}
         onAlertsClick={() => setShowAlerts(true)}
+        onLeagueChange={setLeague}
       />
 
       <nav className="bg-gray-900 border-b border-gray-700 sticky top-[60px] z-30">
@@ -229,7 +234,7 @@ export function Dashboard() {
         {activeTab === 'opportunities' && (
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-white">Trade Opportunities</h2>
-            <TradeOpportunities opportunities={opportunities} />
+            <TradeOpportunities opportunities={opportunities} league={league} />
           </div>
         )}
       </main>
