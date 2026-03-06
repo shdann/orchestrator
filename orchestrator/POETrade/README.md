@@ -2,7 +2,7 @@
 
 A Path of Exile currency and item price monitoring dashboard built with React, TypeScript, and Vite.
 
-**Live Demo:** https://shdann.github.io/orchestrator/POETrade/
+**Live Demo:** https://shdann.github.io/orchestrator/
 
 ## Features
 
