@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowUpDown, ExternalLink } from 'lucide-react';
+import { ArrowUpDown } from 'lucide-react';
 import type { TrackedItem } from '../types/poe';
 
 interface ItemPriceTableProps {

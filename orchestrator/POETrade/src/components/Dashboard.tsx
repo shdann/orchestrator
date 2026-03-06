@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { LayoutDashboard, Package, TrendingUp, ArrowUpRight, DollarSign, Sparkles } from 'lucide-react';
-import type { DataStatus } from '../hooks/usePoeData';
+import { LayoutDashboard, Package, TrendingUp, DollarSign } from 'lucide-react';
 import { usePoeData } from '../hooks/usePoeData';
 import { useAlerts } from '../hooks/useAlerts';
 import { Header } from './Header';
@@ -24,7 +23,6 @@ export function Dashboard() {
     error,
     lastUpdated,
     league,
-    setLeague,
     refresh,
   } = usePoeData('Mercenaries');
 
