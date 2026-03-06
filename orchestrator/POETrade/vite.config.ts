@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   base: '/orchestrator/',
   build: {
-    outDir: 'dist',
+    outDir: '../../assets',
     emptyOutDir: true,
     sourcemap: false,
     rollupOptions: {
